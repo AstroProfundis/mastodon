@@ -282,7 +282,8 @@ class Status < ApplicationRecord
     end
 
     def as_public_timeline(account = nil, local_only = false)
-      query = timeline_scope(local_only).without_replies
+      #query = timeline_scope(local_only).without_replies
+      query = timeline_scope(local_only)
 
       apply_timeline_filters(query, account, [:local, true].include?(local_only))
     end
@@ -388,7 +389,7 @@ class Status < ApplicationRecord
 
       starting_scope
         .with_public_visibility
-        .without_reblogs
+#        .without_reblogs
     end
 
     def apply_timeline_filters(query, account, local_only)
