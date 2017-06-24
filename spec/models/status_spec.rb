@@ -277,22 +277,22 @@ RSpec.describe Status, type: :model do
       expect(results).not_to include(private_status)
     end
 
-    it 'does not include replies' do
+    it 'does include replies' do
       status = Fabricate(:status)
       reply = Fabricate(:status, in_reply_to_id: status.id)
 
       results = Status.as_public_timeline
       expect(results).to include(status)
-      expect(results).not_to include(reply)
+      expect(results).to include(reply)
     end
 
-    it 'does not include boosts' do
+    it 'does include boosts' do
       status = Fabricate(:status)
       boost = Fabricate(:status, reblog_of_id: status.id)
 
       results = Status.as_public_timeline
       expect(results).to include(status)
-      expect(results).not_to include(boost)
+      expect(results).to include(boost)
     end
 
     it 'filters out silenced accounts' do
