@@ -23,6 +23,7 @@ import {
 } from '../../actions/interactions';
 import {
   replyCompose,
+  quoteCompose,
   mentionCompose,
   directCompose,
 } from '../../actions/compose';
@@ -319,6 +320,10 @@ class Status extends ImmutablePureComponent {
       this.props.dispatch(bookmark(status));
     }
   };
+
+    handleQuoteClick = (status) => {
+    this.props.dispatch(quoteCompose(status, this.context.router.history));
+  }
 
   handleDeleteClick = (status, history, withRedraft = false) => {
     const { dispatch, intl } = this.props;
@@ -653,6 +658,7 @@ class Status extends ImmutablePureComponent {
                   onFavourite={this.handleFavouriteClick}
                   onReblog={this.handleReblogClick}
                   onBookmark={this.handleBookmarkClick}
+                  onQuote={this.handleQuoteClick}
                   onDelete={this.handleDeleteClick}
                   onEdit={this.handleEditClick}
                   onDirect={this.handleDirectClick}
