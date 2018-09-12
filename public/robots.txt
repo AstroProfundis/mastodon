@@ -3,3 +3,37 @@
 User-agent: *
 Disallow: /media_proxy/
 Disallow: /interact/
+
+User-agent: Baiduspider
+Disallow: /
+User-agent: baiduspider
+Disallow: /
+
+User-agent: Sosospider
+Disallow: /
+
+User-agent: Sogou spider
+Disallow: /
+User-agent: sogou spider
+Disallow: /
+User-agent: Sogou web spider
+Disallow: /
+User-agent: New-Sogou-Spider
+Disallow: /
+User-agent: Sogou Pic Spider
+Disallow: /
+
+User-agent: YodaoBot
+Disallow: /
+
+User-agent: 360Spider
+Disallow: /
+
+User-agent: JikeSpider
+Disallow: /
+
+User-agent: OutfoxBot
+Disallow: /
+
+User-agent: YisouSpider
+Disallow: /
