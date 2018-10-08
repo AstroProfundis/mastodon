@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tootsuite/mastodon.git"
+    "url": "https://github.com/AstroProfundis/mastodon.git"
   },
   "browserslist": [
     "last 2 versions",
