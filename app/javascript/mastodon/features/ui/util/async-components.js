@@ -139,7 +139,7 @@ export function ListEditor () {
 }
 
 export function ListAdder () {
-  return import(/*webpackChunkName: "features/list_adder" */'../../list_adder');
+  return import(/* webpackChunkName: "features/list_adder" */'../../list_adder');
 }
 
 export function Tesseract () {
