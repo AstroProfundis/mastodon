@@ -70,11 +70,13 @@ class Sanitize
     end
 
     MASTODON_STRICT ||= freeze_config(
-      elements: %w(p br span a),
+      elements: %w(p br span a abbr del pre blockquote code b strong i em h1 h2 h3 h4 h5 ul ol li),
 
       attributes: {
-        'a'    => %w(href rel class),
-        'span' => %w(class),
+        'a'          => %w(href rel class title),
+        'span'       => %w(class),
+        'abbr'       => %w(title),
+        'blockquote' => %w(cite),
       },
 
       add_attributes: {
@@ -84,7 +86,10 @@ class Sanitize
         },
       },
 
-      protocols: {},
+      protocols: {
+        'a'          => { 'href' => HTTP_PROTOCOLS },
+        'blockquote' => { 'cite' => HTTP_PROTOCOLS },
+      },
 
       transformers: [
         CLASS_WHITELIST_TRANSFORMER,
