@@ -2,4 +2,5 @@ default: styles/application.scss
 contrast: styles/contrast.scss
 mastodon-light: styles/mastodon-light.scss
 witches-town: styles/witches-town.scss
+dark-green: styles/dark-green.scss
 nga: styles/nga.scss
