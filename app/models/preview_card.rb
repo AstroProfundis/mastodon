@@ -49,7 +49,7 @@ class PreviewCard < ApplicationRecord
 
   has_and_belongs_to_many :statuses
 
-  has_attached_file :image, processors: [:thumbnail, :blurhash_transcoder], styles: ->(f) { image_styles(f) }, convert_options: { all: '-quality 80 -strip' }, validate_media_type: false
+  has_attached_file :image, processors: [:thumbnail, :blurhash_transcoder], styles: ->(f) { image_styles(f) }, convert_options: { all: '-quality 80 +profile exif' }, validate_media_type: false
 
   validates :url, presence: true, uniqueness: true
   validates_attachment_content_type :image, content_type: IMAGE_MIME_TYPES
@@ -121,7 +121,7 @@ class PreviewCard < ApplicationRecord
         original: {
           geometry: '400x400>',
           file_geometry_parser: FastGeometryParser,
-          convert_options: '-coalesce -strip',
+          convert_options: '-coalesce +profile exif',
           blurhash: BLURHASH_OPTIONS,
         },
       }
