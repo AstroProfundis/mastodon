@@ -28,6 +28,8 @@ import {
   editStatus,
   translateStatus,
   undoStatusTranslation,
+  hideQuote,
+  revealQuote,
 } from '../actions/statuses';
 import {
   unmuteAccount,
@@ -248,6 +250,14 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
       accountId: status.getIn(['account', 'id']),
       url: status.get('url'),
     }));
+  },
+
+  onQuoteToggleHidden (status) {
+    if (status.get('quote_hidden')) {
+      dispatch(revealQuote(status.get('id')));
+    } else {
+      dispatch(hideQuote(status.get('id')));
+    }
   },
 
 });

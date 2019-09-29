@@ -64,6 +64,7 @@ class StatusContent extends React.PureComponent {
     collapsable: PropTypes.bool,
     onCollapsedToggle: PropTypes.func,
     intl: PropTypes.object,
+    quote: PropTypes.bool,
   };
 
   state = {
@@ -79,8 +80,6 @@ class StatusContent extends React.PureComponent {
 
     const { status, onCollapsedToggle } = this.props;
     const links = node.querySelectorAll('a');
-    const QuoteUrlFormat = /(?:https?|ftp):\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+\/users\/[\w-_]+(\/statuses\/\w+)/;
-    const quote = node.innerText.match(new RegExp(`\\[(\\w+)\\]\\[${QuoteUrlFormat.source}\\]`));
 
     let link, mention;
 
@@ -92,12 +91,6 @@ class StatusContent extends React.PureComponent {
       }
 
       link.classList.add('status-link');
-
-      if (quote) {
-        if (link.href.match(QuoteUrlFormat)) {
-          link.addEventListener('click', this.onQuoteClick.bind(this, quote[1]), false);
-        }
-      }
 
       mention = this.props.status.get('mentions').find(item => link.href === item.get('url'));
 
@@ -177,15 +170,6 @@ class StatusContent extends React.PureComponent {
     }
   }
 
-  onQuoteClick = (statusId, e) => {
-    let statusUrl = `/statuses/${statusId}`;
-
-    if (this.context.router && e.button === 0) {
-      e.preventDefault();
-      this.context.router.history.push(statusUrl);
-    }
-  }
-
   handleMouseDown = (e) => {
     this.startXY = [e.clientX, e.clientY];
   }
@@ -233,7 +217,7 @@ class StatusContent extends React.PureComponent {
   }
 
   render () {
-    const { status, intl } = this.props;
+    const { status, intl, quote } = this.props;
 
     const hidden = this.props.onExpandedToggle ? !this.props.expanded : this.state.hidden;
     const renderReadMore = this.props.onClick && status.get('collapsed');
@@ -289,8 +273,8 @@ class StatusContent extends React.PureComponent {
 
           <div tabIndex={!hidden ? 0 : null} className={`status__content__text ${!hidden ? 'status__content__text--visible' : ''} translate`} lang={lang} dangerouslySetInnerHTML={content} />
 
-          {!hidden && poll}
-          {!hidden && translateButton}
+          {!quote && !hidden && poll}
+          {!quote && !hidden && translateButton}
         </div>
       );
     } else if (this.props.onClick) {
@@ -299,7 +283,7 @@ class StatusContent extends React.PureComponent {
           <div className={classNames} ref={this.setRef} tabIndex='0' onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp} key='status-content' onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
             <div className='status__content__text status__content__text--visible translate' lang={lang} dangerouslySetInnerHTML={content} />
 
-            {poll}
+            {!quote && poll}
             {translateButton}
           </div>
 
@@ -311,7 +295,7 @@ class StatusContent extends React.PureComponent {
         <div className={classNames} ref={this.setRef} tabIndex='0' onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
           <div className='status__content__text status__content__text--visible translate' lang={lang} dangerouslySetInnerHTML={content} />
 
-          {poll}
+          {!quote && poll}
           {translateButton}
         </div>
       );
