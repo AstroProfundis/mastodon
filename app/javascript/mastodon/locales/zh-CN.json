@@ -467,6 +467,8 @@
   "status.pin": "在个人资料页面置顶",
   "status.pinned": "置顶帖子",
   "status.read_more": "查看更多",
+  "status.quote": "引用",
+  "status.unlisted_quote": "非公开引用",
   "status.reblog": "转贴",
   "status.reblog_private": "转贴（可见者不变）",
   "status.reblogged_by": "{name} 转贴了",
