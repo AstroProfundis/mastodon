@@ -37,7 +37,8 @@ const mapDispatchToProps = (dispatch, { id }) => ({
 
 const removeExtraLineBreaks = str => str.replace(/\n\n/g, '******')
   .replace(/\n/g, ' ')
-  .replace(/\*\*\*\*\*\*/g, '\n\n');
+  .replace(/\*\*\*\*\*\*/g, '\n\n')
+  .replace(/(?<=[\u4e00-\u9fff|（）《》—；，。“”！？])\s(?=[\u4e00-\u9fff|（）《》—；，。“”！？])/g, ''); // Remove spaces between zh chars 
 
 const assetHost = process.env.CDN_HOST || '';
 
