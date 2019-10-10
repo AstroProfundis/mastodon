@@ -126,7 +126,7 @@ zh-CN:
       read: 读取你的帐户数据
       read:accounts: 查看账号信息
       read:blocks: 查看你的屏蔽列表
-      read:bookmarks: 查看您的书签
+      read:bookmarks: 查看你的书签
       read:favourites: 查看喜欢的嘟文
       read:filters: 查看你的过滤器
       read:follows: 查看你的关注
@@ -139,7 +139,7 @@ zh-CN:
       write: 修改你的账号数据
       write:accounts: 修改你的个人资料
       write:blocks: 屏蔽账号和域名
-      write:bookmarks: 为嘟文添加书签
+      write:bookmarks: 将嘟文加入书签
       write:favourites: 喜欢的嘟文
       write:filters: 创建过滤器
       write:follows: 关注其他人
