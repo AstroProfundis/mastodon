@@ -10,7 +10,7 @@ const messages = defineMessages({
   upload: { id: 'upload_button.label', defaultMessage: 'Add media ({formats})' },
 });
 
-const SUPPORTED_FORMATS = 'JPEG, PNG, GIF, WebM, MP4, MOV, OGG, WAV, MP3, FLAC';
+const SUPPORTED_FORMATS = 'JPEG, PNG, GIF, WEBP, HEIF, HEIC, WebM, MP4, MOV, OGG, WAV, MP3, FLAC';
 
 const makeMapStateToProps = () => {
   const mapStateToProps = state => ({
