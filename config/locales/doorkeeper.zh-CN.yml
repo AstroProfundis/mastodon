@@ -124,8 +124,8 @@ zh-CN:
       push: 接收你的帐户的推送通知
       read: 读取你的帐户数据
       read:accounts: 查看账户信息
-      read:bookmarks: 查看你的书签
       read:blocks: 查看你的屏蔽列表
+      read:bookmarks: 查看你的书签
       read:favourites: 查看你的收藏
       read:filters: 查看你的过滤器
       read:follows: 查看你的关注
@@ -137,8 +137,8 @@ zh-CN:
       read:statuses: 查看所有嘟文
       write: 修改你的账户数据
       write:accounts: 修改你的个人资料
-      write:bookmarks: 将嘟文加入书签
       write:blocks: 屏蔽账户和域名
+      write:bookmarks: 将嘟文加入书签
       write:favourites: 收藏嘟文
       write:filters: 创建过滤器
       write:follows: 关注其他人
