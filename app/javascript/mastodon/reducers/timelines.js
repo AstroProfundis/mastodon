@@ -168,7 +168,7 @@ export default function timelines(state = initialState, action) {
       initialTimeline,
       map => {
         const online = Math.max(map.get('online') - 1, 0);
-        return map.set('online', online).update(action.usePendingItems ? 'pendingItems' : 'items', items => (!online && items.first()) ? items.unshift(null) : items)
+        return map.set('online', online).update(action.usePendingItems ? 'pendingItems' : 'items', items => (!online && items.first()) ? items.unshift(null) : items);
       }
     );
   default:
