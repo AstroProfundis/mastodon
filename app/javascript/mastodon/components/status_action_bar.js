@@ -259,8 +259,6 @@ class StatusActionBar extends ImmutablePureComponent {
 
     menu.push(null);
 
-    menu.push({ text: intl.formatMessage(status.get('bookmarked') ? messages.removeBookmark : messages.bookmark), action: this.handleBookmarkClick });
-
     if (writtenByMe && pinnableStatus) {
       menu.push({ text: intl.formatMessage(status.get('pinned') ? messages.unpin : messages.pin), action: this.handlePinClick });
     }
