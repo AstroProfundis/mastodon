@@ -26,10 +26,12 @@ class PostStatusService < BaseService
     @options     = options
     @text        = @options[:text] || ''
     @in_reply_to = @options[:thread]
+    @quote_id    = @options[:quote_id]
 
     return idempotency_duplicate if idempotency_given? && idempotency_duplicate?
 
     validate_media!
+    preprocess_quote!
     preprocess_attributes!
 
     if scheduled?
@@ -72,6 +74,13 @@ class PostStatusService < BaseService
     end
   rescue ArgumentError
     raise ActiveRecord::RecordInvalid
+  end
+
+  def preprocess_quote!
+    if @quote_id.present?
+      quote = Status.find(@quote_id)
+      @quote_id = quote.reblog_of_id.to_s if quote.reblog?
+    end
   end
 
   def process_status!
@@ -180,7 +189,7 @@ class PostStatusService < BaseService
       language: language_from_option(@options[:language]) || @account.user&.setting_default_language&.presence || LanguageDetector.instance.detect(@text, @account),
       application: @options[:application],
       rate_limit: @options[:with_rate_limit],
-      quote_id: @options[:quote_id],
+      quote_id: @quote_id,
     }.compact
   end
 
