@@ -1126,9 +1126,9 @@
 }
 
 .quote-status {
-  border: solid 1px $ui-base-lighter-color;
-  border-radius: 4px;
-  padding: 5px;
+  border: 1px dashed $ui-base-lighter-color;
+  border-radius: 8px;
+  padding: 8px;
   margin-top: 8px;
   position: relative;
 
@@ -1159,8 +1159,8 @@
     height: 18px;
     width: 18px;
     position: absolute;
-    top: 5px !important;
-    left: 5px !important;
+    top: 8px !important;
+    left: 8px !important;
     cursor: pointer;
 
     & > div {
@@ -1174,7 +1174,12 @@
   }
 
   .display-name {
-    padding-left: 20px;
+    padding-left: 24px;
+  }
+
+  .status__content {
+    padding-top: 8px;
+    font-size: 15px;
   }
 
   .detailed-status__display-name {
