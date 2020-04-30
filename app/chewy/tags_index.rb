@@ -1,11 +1,20 @@
 # frozen_string_literal: true
 
 class TagsIndex < Chewy::Index
-  settings index: { refresh_interval: '30s' }, analysis: {
+  settings index: { refresh_interval: '3m' }, analysis: {
+    char_filter: {
+      tsconvert: {
+        type: 'stconvert',
+        keep_both: false,
+        delimiter: '#',
+        convert_type: 't2s',
+      },
+    },
     analyzer: {
       content: {
         tokenizer: 'ik_max_word',
         filter: %w(lowercase asciifolding cjk_width),
+        char_filter: %w(tsconvert),
       },
 
       edge_ngram: {
