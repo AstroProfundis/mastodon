@@ -2,7 +2,7 @@
 
 class BlacklistedEmailValidator < ActiveModel::Validator
   def validate(user)
-    return if user.valid_invitation? || user.email.blank?
+    return if user.email.blank?
 
     @email = user.email
 
