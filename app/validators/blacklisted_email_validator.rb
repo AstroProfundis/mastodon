@@ -2,7 +2,7 @@
 
 class BlacklistedEmailValidator < ActiveModel::Validator
   def validate(user)
-    return if user.valid_invitation? || user.email.blank?
+    return if user.email.blank?
 
     user.errors.add(:email, :blocked) if blocked_email_provider?(user.email, user.sign_up_ip)
     user.errors.add(:email, :taken) if blocked_canonical_email?(user.email)
