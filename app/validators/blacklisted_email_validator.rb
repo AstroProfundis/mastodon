@@ -2,8 +2,6 @@
 
 class BlacklistedEmailValidator < ActiveModel::Validator
   def validate(user)
-    return if user.valid_invitation?
-
     @email = user.email
 
     user.errors.add(:email, I18n.t('users.blocked_email_provider')) if blocked_email?
@@ -16,7 +14,7 @@ class BlacklistedEmailValidator < ActiveModel::Validator
   end
 
   def on_blacklist?
-    return true  if EmailDomainBlock.block?(@email)
+    return true if EmailDomainBlock.block?(@email)
     return false if Rails.configuration.x.email_domains_blacklist.blank?
 
     domains = Rails.configuration.x.email_domains_blacklist.gsub('.', '\.')
