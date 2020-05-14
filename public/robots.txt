@@ -1,12 +1,12 @@
 # See http://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
 
-User-agent: *
-Disallow: /media_proxy/
-Disallow: /interact/
-
 User-agent: Baiduspider
 Disallow: /
 User-agent: baiduspider
+Disallow: /
+User-agent: Baiduspider-news
+Disallow: /
+User-agent: Baiduspider-image
 Disallow: /
 
 User-agent: Sosospider
@@ -16,17 +16,30 @@ User-agent: Sogou spider
 Disallow: /
 User-agent: sogou spider
 Disallow: /
+User-agent: Sogou spider2
+Disallow: /
+User-agent: Sogou Orion spider
+Disallow: /
 User-agent: Sogou web spider
 Disallow: /
 User-agent: New-Sogou-Spider
 Disallow: /
 User-agent: Sogou Pic Spider
 Disallow: /
+User-agent: Sogou News Spider
+Disallow: /
+User-agent: Sogou blog
+Disallow: /
+User-agent: Sogou inst spider
+Disallow: /
 
 User-agent: YodaoBot
 Disallow: /
 
 User-agent: 360Spider
+Disallow: /
+
+User-agent: HaosouSpider
 Disallow: /
 
 User-agent: JikeSpider
@@ -37,3 +50,16 @@ Disallow: /
 
 User-agent: YisouSpider
 Disallow: /
+User-agent: YisouSpider
+Disallow: /
+
+User-agent: EasouSpider
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: *
+Disallow: /media_proxy/
+Disallow: /interact/
+
