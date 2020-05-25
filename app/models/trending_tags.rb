@@ -2,13 +2,13 @@
 
 class TrendingTags
   KEY                  = 'trending_tags'
-  EXPIRE_HISTORY_AFTER = 7.days.seconds
-  EXPIRE_TRENDS_AFTER  = 1.day.seconds
-  THRESHOLD            = 5
+  EXPIRE_HISTORY_AFTER = 10.days.seconds
+  EXPIRE_TRENDS_AFTER  = 60.hours.seconds
+  THRESHOLD            = 4
   LIMIT                = 10
   REVIEW_THRESHOLD     = 3
   MAX_SCORE_COOLDOWN   = 2.days.freeze
-  MAX_SCORE_HALFLIFE   = 2.hours.freeze
+  MAX_SCORE_HALFLIFE   = 90.minutes.freeze
 
   class << self
     include Redisable
@@ -24,7 +24,7 @@ class TrendingTags
 
       # Only update when the tag was last used once every 12 hours
       # and only if a status is given (lets use ignore reblogs)
-      tag.update(last_status_at: at_time) if status.present? && (tag.last_status_at.nil? || (tag.last_status_at < at_time && tag.last_status_at < 12.hours.ago))
+      tag.update(last_status_at: at_time) if status.present? && (tag.last_status_at.nil? || (tag.last_status_at < at_time && tag.last_status_at < 16.hours.ago))
     end
 
     def update!(at_time = Time.now.utc)
