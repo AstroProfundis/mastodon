@@ -2,13 +2,13 @@
 
 class TrendingTags
   KEY                  = 'trending_tags'
-  EXPIRE_HISTORY_AFTER = 7.days.seconds
-  EXPIRE_TRENDS_AFTER  = 1.day.seconds
-  THRESHOLD            = 5
+  EXPIRE_HISTORY_AFTER = 14.days.seconds
+  EXPIRE_TRENDS_AFTER  = 16.hours.seconds
+  THRESHOLD            = 4
   LIMIT                = 10
   REVIEW_THRESHOLD     = 3
   MAX_SCORE_COOLDOWN   = 2.days.freeze
-  MAX_SCORE_HALFLIFE   = 2.hours.freeze
+  MAX_SCORE_HALFLIFE   = 1.hours.freeze
 
   class << self
     include Redisable
@@ -20,7 +20,7 @@ class TrendingTags
       increment_unique_use!(tag.id, account.id, at_time)
       increment_use!(tag.id, at_time)
 
-      tag.update(last_status_at: Time.now.utc) if tag.last_status_at.nil? || tag.last_status_at < 12.hours.ago
+      tag.update(last_status_at: Time.now.utc) if tag.last_status_at.nil? || tag.last_status_at < 16.hours.ago
     end
 
     def update!(at_time = Time.now.utc)
