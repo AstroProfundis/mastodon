@@ -616,6 +616,10 @@
         "id": "status.unlisted_quote"
       },
       {
+        "defaultMessage": "Muted quote",
+        "id": "status.muted_quote"
+      },
+      {
         "defaultMessage": "Favourite",
         "id": "status.favourite"
       },

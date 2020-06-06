@@ -35,12 +35,20 @@ export const makeGetStatus = () => {
     [
       (state, { id }) => state.getIn(['statuses', id]),
       (state, { id }) => state.getIn(['statuses', state.getIn(['statuses', id, 'reblog'])]),
+      (state, { id }) => state.getIn(['statuses', state.getIn(['statuses', id, 'quote_id'])]),
       (state, { id }) => state.getIn(['accounts', state.getIn(['statuses', id, 'account'])]),
       (state, { id }) => state.getIn(['accounts', state.getIn(['statuses', state.getIn(['statuses', id, 'reblog']), 'account'])]),
+      (state, { id }) => state.getIn(['accounts', state.getIn(['statuses', state.getIn(['statuses', id, 'quote_id']), 'account'])]),
+      (state, { id }) => state.getIn(['relationships', state.getIn(['statuses', id, 'account'])]),
+      (state, { id }) => state.getIn(['relationships', state.getIn(['statuses', state.getIn(['statuses', id, 'reblog']), 'account'])]),
+      (state, { id }) => state.getIn(['relationships', state.getIn(['statuses', state.getIn(['statuses', id, 'quote_id']), 'account'])]),
+      (state, { id }) => state.getIn(['accounts', state.getIn(['accounts', state.getIn(['statuses', id, 'account']), 'moved'])]),
+      (state, { id }) => state.getIn(['accounts', state.getIn(['accounts', state.getIn(['statuses', state.getIn(['statuses', id, 'reblog']), 'account']), 'moved'])]),
+      (state, { id }) => state.getIn(['accounts', state.getIn(['accounts', state.getIn(['statuses', state.getIn(['statuses', id, 'quote_id']), 'account']), 'moved'])]),
       getFilters,
     ],
 
-    (statusBase, statusReblog, accountBase, accountReblog, filters) => {
+    (statusBase, statusReblog, statusQuote, accountBase, accountReblog, accountQuote, relationship, reblogRelationship, quoteRelationship, moved, reblogMoved, quoteMoved, filters) => {
       if (!statusBase || statusBase.get('isLoading')) {
         return null;
       }
@@ -63,8 +71,19 @@ export const makeGetStatus = () => {
         }
       }
 
+      if (statusQuote) {
+        accountQuote = accountQuote.withMutations(map => {
+          map.set('relationship', quoteRelationship);
+          map.set('moved', quoteMoved);
+        });
+        statusQuote = statusQuote.set('account', accountQuote);
+      } else {
+        statusQuote = null;
+      }
+
       return statusBase.withMutations(map => {
         map.set('reblog', statusReblog);
+        map.set('quote', statusQuote);
         map.set('account', accountBase);
         map.set('matched_filters', filtered);
       });
