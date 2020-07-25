@@ -136,16 +136,54 @@ class DetailedStatus extends ImmutablePureComponent {
 
       let quote_media = null;
       if (quote_status.get('media_attachments').size > 0) {
-        quote_media = (
-          <MediaGallery
-            standalone
-            sensitive={quote_status.get('sensitive')}
-            media={quote_status.get('media_attachments')}
-            height={300}
-            onOpenMedia={this.props.onOpenMedia}
-            quote
-          />
-        );
+        if (quote_status.getIn(['media_attachments', 0, 'type']) === 'audio') {
+          const attachment = quote_status.getIn(['media_attachments', 0]);
+
+          quote_media = (
+            <Audio
+              src={attachment.get('url')}
+              alt={attachment.get('description')}
+              duration={attachment.getIn(['meta', 'original', 'duration'], 0)}
+              poster={attachment.get('preview_url') || quote_status.getIn(['account', 'avatar_static'])}
+              backgroundColor={attachment.getIn(['meta', 'colors', 'background'])}
+              foregroundColor={attachment.getIn(['meta', 'colors', 'foreground'])}
+              accentColor={attachment.getIn(['meta', 'colors', 'accent'])}
+              height={60}
+            />
+          );
+        } else if (quote_status.getIn(['media_attachments', 0, 'type']) === 'video') {
+          const attachment = quote_status.getIn(['media_attachments', 0]);
+
+          quote_media = (
+            <Video
+              preview={attachment.get('preview_url')}
+              blurhash={attachment.get('blurhash')}
+              src={attachment.get('url')}
+              alt={attachment.get('description')}
+              width={300}
+              height={150}
+              inline
+              onOpenVideo={this.handleOpenVideo}
+              sensitive={quote_status.get('sensitive')}
+              visible={this.props.showQuoteMedia}
+              onToggleVisibility={this.props.onToggleQuoteMediaVisibility}
+              quote
+            />
+          );
+        } else {
+          quote_media = (
+            <MediaGallery
+              standalone
+              sensitive={quote_status.get('sensitive')}
+              media={quote_status.get('media_attachments')}
+              height={300}
+              onOpenMedia={this.props.onOpenMedia}
+              visible={this.props.showQuoteMedia}
+              onToggleVisibility={this.props.onToggleQuoteMediaVisibility}
+              quote
+            />
+          );
+        }
       }
 
       quote = (
