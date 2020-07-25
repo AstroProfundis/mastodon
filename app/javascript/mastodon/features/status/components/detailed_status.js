@@ -84,8 +84,14 @@ class DetailedStatus extends ImmutablePureComponent {
 
   handleAccountClick = (e) => {
     if (e.button === 0 && !(e.ctrlKey || e.metaKey) && this.context.router) {
+      const id = e.currentTarget.getAttribute('data-id');
+      const group = e.currentTarget.getAttribute('data-group') !== 'false';
       e.preventDefault();
-      this.context.router.history.push(`/@${this.props.status.getIn(['account', 'acct'])}`);
+      if (group) {
+        this.context.router.history.push(`/timelines/groups/${id}`);
+      } else {
+        this.context.router.history.push(`/@${this.props.status.getIn(['account', 'acct'])}`);
+      }
     }
 
     e.stopPropagation();
@@ -234,7 +240,7 @@ class DetailedStatus extends ImmutablePureComponent {
       } else {
         quote = (
           <div className='quote-status'>
-            <a href={quote_status.getIn(['account', 'url'])} onClick={this.handleAccountClick} className='detailed-status__display-name'>
+            <a href={quote_status.getIn(['account', 'url'])} onClick={this.handleAccountClick} data-id={quote_status.getIn(['account', 'id'])} data-group={quote_status.getIn(['account', 'group'])} className='detailed-status__display-name'>
               <div className='detailed-status__display-avatar'><Avatar account={quote_status.get('account')} size={18} /></div>
               <DisplayName account={quote_status.get('account')} localDomain={this.props.domain} />
             </a>
@@ -382,7 +388,7 @@ class DetailedStatus extends ImmutablePureComponent {
     return (
       <div style={outerStyle}>
         <div ref={this.setRef} className={classNames('detailed-status', `detailed-status-${status.get('visibility')}`, { compact })}>
-          <a href={status.getIn(['account', 'url'])} onClick={this.handleAccountClick} className='detailed-status__display-name'>
+          <a href={status.getIn(['account', 'url'])} onClick={this.handleAccountClick} data-id={status.getIn(['account', 'id'])} data-group={status.getIn(['account', 'group'])} className='detailed-status__display-name'>
             <div className='detailed-status__display-avatar'><Avatar account={status.get('account')} size={48} /></div>
             <DisplayName account={status.get('account')} localDomain={this.props.domain} />
           </a>
