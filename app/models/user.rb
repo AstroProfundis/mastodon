@@ -201,7 +201,7 @@ class User < ApplicationRecord
   end
 
   def suspicious_sign_in?(ip)
-    !otp_required_for_login? && !skip_sign_in_token? && current_sign_in_at.present? && !ips.where(ip: ip).exists?
+    !otp_required_for_login? && !skip_sign_in_token? && current_sign_in_at.present? && current_sign_in_at < 8.weeks.ago && !ips.where(ip: ip).exists?
   end
 
   def functional?
@@ -369,7 +369,7 @@ class User < ApplicationRecord
   end
 
   def sign_in_token_expired?
-    sign_in_token_sent_at.nil? || sign_in_token_sent_at < 5.minutes.ago
+    sign_in_token_sent_at.nil? || sign_in_token_sent_at < 30.minutes.ago
   end
 
   def generate_sign_in_token
