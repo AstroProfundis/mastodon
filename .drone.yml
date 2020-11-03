@@ -1,0 +1,65 @@
+kind: pipeline
+type: docker
+name: testing
+node:
+  geo: eu
+
+steps:
+  - name: Run unit test
+    image: ruby:2.6.5-buster
+    volumes:
+      - name: node_modules
+        path: ./node_modules/
+      - name: bundle
+        path: ./.bundle/
+      - name: vendor
+        path: ./vendor/bundle/
+      - name: public
+        path: ./public/
+    environment:
+      BUNDLE_JOBS: 3
+      BUNDLE_RETRY: 3
+      BUNDLE_APP_CONFIG: ./.bundle/
+      BUNDLE_PATH: ./vendor/bundle/
+      RAILS_ENV: test
+      REDIS_HOST: test-redis
+      DB_HOST: test-psql
+      DB_USER: root
+    commands:
+      - apt-get update && apt-get install -y curl
+      - curl -sL https://deb.nodesource.com/setup_12.x | bash -
+      - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+      - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+      - apt-get update && apt-get install -y imagemagick ffmpeg libpq-dev libxml2-dev libxslt1-dev file git-core g++ libprotobuf-dev protobuf-compiler pkg-config nodejs gcc autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev yarn libidn11-dev libicu-dev libjemalloc-dev sudo
+        #- bundle config --local clean 'true'
+        #- bundle config --local deployment 'true'
+        #- bundle config --local without 'development production'
+        #- bundle config --local frozen 'true'
+      - bundle config --local path $BUNDLE_PATH
+      - bundle install
+      - rails assets:precompile
+      - rails db:create db:schema:load db:seed
+      - bundle exec rspec --profile 10 --format RspecJunitFormatter --out test_results/rspec.xml --format progress
+
+  - name: Test webui
+    image: node:12-buster
+    volumes:
+      - name: node_modules
+        path: ./node_modules/
+      - name: bundle
+        path: ./.bundle/
+      - name: vendor
+        path: ./vendor/bundle/
+      - name: public
+        path: ./public/
+    commands:
+      - yarn test:jest
+
+services:
+  - name: test-psql
+    image: postgres:12
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_HOST_AUTH_METHOD: trust
+  - name: test-redis
+    image: redis:5-alpine
