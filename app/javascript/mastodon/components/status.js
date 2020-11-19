@@ -518,7 +518,10 @@ class Status extends ImmutablePureComponent {
       let quote_status = status.get('quote');
 
       let quote_media = null;
-      if (quote_status.get('media_attachments').size > 0) {
+
+      if (pictureInPicture.get('inUse')) {
+          quote_media = <PictureInPicturePlaceholder width={this.props.cachedMediaWidth} />;
+      } else if (quote_status.get('media_attachments').size > 0) {
         if (this.props.muted) {
           quote_media = (
             <AttachmentList
@@ -555,6 +558,7 @@ class Status extends ImmutablePureComponent {
               {Component => (
                 <Component
                   preview={attachment.get('preview_url')}
+                  frameRate={attachment.getIn(['meta', 'original', 'frame_rate'])}
                   blurhash={attachment.get('blurhash')}
                   src={attachment.get('url')}
                   alt={attachment.get('description')}
@@ -564,6 +568,7 @@ class Status extends ImmutablePureComponent {
                   sensitive={quote_status.get('sensitive')}
                   onOpenVideo={this.handleOpenVideo}
                   cacheWidth={this.props.cacheMediaWidth}
+                  deployPictureInPicture={pictureInPicture.get('available') ? this.handleDeployPictureInPicture : undefined}
                   visible={this.state.showQuoteMedia}
                   onToggleVisibility={this.handleToggleQuoteMediaVisibility}
                   quote
@@ -579,7 +584,7 @@ class Status extends ImmutablePureComponent {
                   media={quote_status.get('media_attachments')}
                   sensitive={quote_status.get('sensitive')}
                   height={110}
-                  onOpenMedia={this.props.onOpenMedia}
+                  onOpenMedia={this.handleOpenMedia}
                   cacheWidth={this.props.cacheMediaWidth}
                   defaultWidth={this.props.cachedMediaWidth}
                   visible={this.state.showQuoteMedia}
