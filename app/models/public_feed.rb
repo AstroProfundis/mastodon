@@ -21,8 +21,8 @@ class PublicFeed
   def get(limit, max_id = nil, since_id = nil, min_id = nil)
     scope = public_scope
 
-    scope.merge!(without_replies_scope) unless with_replies?
-    scope.merge!(without_reblogs_scope) unless with_reblogs?
+    scope.merge!(without_replies_scope) unless with_replies? || local_only?
+    #scope.merge!(without_reblogs_scope) unless with_reblogs?
     scope.merge!(local_only_scope) if local_only?
     scope.merge!(remote_only_scope) if remote_only?
     scope.merge!(account_filters_scope) if account?
