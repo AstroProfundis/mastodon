@@ -1732,8 +1732,29 @@ en:
     does_not_match_previous_name: does not match the previous name
   themes:
     contrast: Mastodon (High contrast)
+    cybre-light: Cyber Light Pink
+    cyberpunk-neon: Cyberpunk Neon
+    deep-green: Deep Green
     default: Mastodon (Dark)
+    forest: Forest
+    geodude: Spring Earth
+    luxury: Luxury Purple
     mastodon-light: Mastodon (Light)
+    meemu-org: Seaside Twilight
+    neoncity: Neon City
+    new-year: Chinese New Year
+    nga: Light Yellow
+    pastel-gradient: Pastel Gradient
+    purple-haze: Purple Haze
+    royal-tenenbaums: Rock Cyan
+    sakura: Sakura
+    sleeping-town: Sleeping Town
+    strawberry: Strawberry
+    swan-lake: Swan Lake
+    ubuntu-light: Light Hazel
+    ubuntu-terminal: Dark Purple
+    win95: Windows 95
+    witches-town: Witches Town
   time:
     formats:
       default: "%b %d, %Y, %H:%M"

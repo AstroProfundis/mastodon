@@ -1698,9 +1698,30 @@ zh-CN:
   tags:
     does_not_match_previous_name: 和之前的名称不匹配
   themes:
-    contrast: Mastodon（高对比度）
-    default: Mastodon（暗色主题）
-    mastodon-light: Mastodon（亮色主题）
+    contrast: Mastodon （高对比度）
+    cybre-light: 赛博浅粉
+    cyberpunk-neon: 赛博朋克
+    deep-green: 墨绿
+    default: Mastodon （暗色主题）
+    forest: 森林
+    geodude: 初春土地
+    luxury: 奢华紫
+    mastodon-light: Mastodon （亮色主题）
+    meemu-org: 海边暮色
+    neoncity: 霓虹都市
+    new-year: 恭贺新年
+    nga: 浅黄
+    pastel-gradient: 春日渐变
+    purple-haze: 紫色薄雾
+    royal-tenenbaums: 岩青
+    sakura: 樱花
+    sleeping-town: 沉睡小镇
+    strawberry: 草莓象
+    swan-lake: 天鹅湖
+    ubuntu-light: 浅褐
+    ubuntu-terminal: 深紫
+    win95: Windows 95
+    witches-town: 巫师小镇
   time:
     formats:
       default: "%Y年%m月%d日 %H:%M"
