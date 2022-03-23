@@ -86,7 +86,7 @@ class Account < ApplicationRecord
 
   MAX_DISPLAY_NAME_LENGTH = (ENV['MAX_DISPLAY_NAME_CHARS'] || 32).to_i
   MAX_NOTE_LENGTH = (ENV['MAX_BIO_CHARS'] || 512).to_i
-  MAX_FIELDS = (ENV['MAX_PROFILE_FIELDS'] || 4).to_i
+  MAX_FIELDS = (ENV['MAX_PROFILE_FIELDS'] || 6).to_i
 
   # Remote user validations, also applies to internal actors
   validates :username, format: { with: USERNAME_ONLY_RE }, if: -> { (!local? || actor_type == 'Application') && will_save_change_to_username? }
