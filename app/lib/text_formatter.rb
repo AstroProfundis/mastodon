@@ -44,7 +44,6 @@ class TextFormatter
     end
 
     html = simple_format(html, {}, sanitize: false).delete("\n") if multiline?
-    html = quotify(html, status) if status.quote? && !options[:escape_quotify]
 
     html.html_safe # rubocop:disable Rails/OutputSafety
   end
@@ -82,12 +81,6 @@ class TextFormatter
   end
 
   private
-
-  def quotify(html, status)
-    url = ActivityPub::TagManager.instance.url_for(status.quote)
-    link = link_to_url(url)
-    html.sub(/(<[^>]+>)\z/, "<span class=\"quote-inline\"><br/>QT: #{link}</span>\\1")
-  end
 
   def rewrite
     entities.sort_by! do |entity|
