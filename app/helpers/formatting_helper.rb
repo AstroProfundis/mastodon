@@ -53,6 +53,15 @@ module FormattingHelper
     ).to_str
   end
 
+  def quote_status_content_format(status)
+    url = ActivityPub::TagManager.instance.url_for(status.quote)
+    link = linkify(url)
+    # Rails.logger.warn("[debug] #{url.to_s}")
+    html = html_aware_format(status.text, status.content_type, status.local?, preloaded_accounts: [status.account] + (status.respond_to?(:active_mentions) ? status.active_mentions.map(&:account) : []))
+    html.sub(/(<[^>]+>)\z/, "<span class=\"quote-inline\"><br/>QT: #{link}</span>\\1")
+    return html
+  end
+
   def account_bio_format(account)
     html_aware_format(account.note, account.local?)
   end

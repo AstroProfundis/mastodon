@@ -68,18 +68,6 @@ class TextFormatter
     end
   end
 
-  def format_in_quote(status, **options)
-    html = to_s(status)
-    return '' if html.empty?
-    doc = Nokogiri::HTML.parse(html, nil, 'utf-8')
-    doc.search('span.invisible').remove
-    html = doc.css('body')[0].inner_html
-    html.sub!(/^<p>(.+)<\/p>$/, '\1')
-    html = Sanitize.clean(html).delete("\n").truncate(150)
-    html = encode_custom_emojis(html, status.emojis) if options[:custom_emojify]
-    html.html_safe
-  end
-
   private
 
   def rewrite
