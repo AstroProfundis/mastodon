@@ -3,7 +3,7 @@
 class ActivityPub::NoteSerializer < ActivityPub::Serializer
   include FormattingHelper
 
-  context_extensions :atom_uri, :conversation, :sensitive, :voters_count
+  context_extensions :atom_uri, :conversation, :sensitive, :voters_count, :quote_uri
 
   attributes :id, :type, :summary,
              :in_reply_to, :published, :url,
@@ -11,6 +11,9 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
              :atom_uri, :in_reply_to_atom_uri,
              :conversation
 
+  attribute :quote_uri, if: -> { object.quote? }
+  attribute :misskey_quote, key: :_misskey_quote, if: -> { object.quote? }
+  attribute :misskey_content, key: :_misskey_content, if: -> { object.quote? }
   attribute :content
   attribute :content_map, if: :language?
   attribute :updated, if: :edited?
@@ -136,6 +139,16 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
     else
       OStatus::TagManager.instance.unique_tag(object.conversation.created_at, object.conversation.id, 'Conversation')
     end
+  end
+
+  def quote_uri
+    ActivityPub::TagManager.instance.uri_for(object.quote) if object.quote?
+  end
+
+  alias misskey_quote quote_uri
+
+  def misskey_content
+    object.text if object.quote?
   end
 
   def local?

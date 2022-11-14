@@ -28,6 +28,11 @@
   .fields-group
     = f.input :setting_show_application, as: :boolean, wrapper: :with_label, recommended: true
 
+  %h4= t 'preferences.fedibird_features'
+
+  .fields-group
+    = f.input :setting_show_quote_button, as: :boolean, wrapper: :with_label
+
   %h4= t 'preferences.public_timelines'
 
   .fields-group

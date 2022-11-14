@@ -236,10 +236,12 @@ class MediaGallery extends React.PureComponent {
     visible: PropTypes.bool,
     autoplay: PropTypes.bool,
     onToggleVisibility: PropTypes.func,
+    quote: PropTypes.bool,
   };
 
   static defaultProps = {
     standalone: false,
+    quote: false,
   };
 
   state = {
@@ -310,7 +312,7 @@ class MediaGallery extends React.PureComponent {
   }
 
   render () {
-    const { media, intl, sensitive, height, defaultWidth, standalone, autoplay } = this.props;
+    const { media, intl, sensitive, height, defaultWidth, standalone, autoplay, quote } = this.props;
     const { visible } = this.state;
 
     const width = this.state.width || defaultWidth;
@@ -324,9 +326,9 @@ class MediaGallery extends React.PureComponent {
         style.height = width / this.props.media.getIn([0, 'meta', 'small', 'aspect']);
       }
     } else if (width) {
-      style.height = width / (16/9);
+      style.height = width / (16/9) / (quote ? 2 : 1);
     } else {
-      style.height = height;
+      style.height = height / (quote ? 2 : 1);
     }
 
     const size     = media.take(4).size;

@@ -48,7 +48,7 @@ class FetchLinkCardService < BaseService
   def html
     return @html if defined?(@html)
 
-    Request.new(:get, @url).add_headers('Accept' => 'text/html', 'User-Agent' => Mastodon::Version.user_agent + ' Bot').perform do |res|
+    Request.new(:get, @url).add_headers('Accept' => 'text/html', 'User-Agent' => "#{Mastodon::Version.user_agent} Bot").perform do |res|
       # We follow redirects, and ideally we want to save the preview card for
       # the destination URL and not any link shortener in-between, so here
       # we set the URL to the one of the last response in the redirect chain
@@ -77,7 +77,7 @@ class FetchLinkCardService < BaseService
         @status.text.scan(URL_PATTERN).map { |array| Addressable::URI.parse(array[1]).normalize }
       else
         document = Nokogiri::HTML(@status.text)
-        links    = document.css('a')
+        links    = document.css(':not(.quote-inline) > a')
 
         links.filter_map { |a| Addressable::URI.parse(a['href']) unless skip_link?(a) }.filter_map(&:normalize)
       end
@@ -88,7 +88,7 @@ class FetchLinkCardService < BaseService
 
   def bad_url?(uri)
     # Avoid local instance URLs and invalid URLs
-    uri.host.blank? || TagManager.instance.local_url?(uri.to_s) || !%w(http https).include?(uri.scheme) || uri.to_s.bytesize > BYTESIZE_LIMIT
+    uri.host.blank? || (TagManager.instance.local_url?(uri.to_s) && uri.to_s !~ %r{/users/[\w_-]+/statuses/\w+}) || !%w(http https).include?(uri.scheme) || uri.to_s.bytesize > BYTESIZE_LIMIT
   end
 
   def mention_link?(anchor)

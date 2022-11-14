@@ -51,6 +51,7 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:use_pending_items] = object.current_account.user.setting_use_pending_items
       store[:trends]            = Setting.trends && object.current_account.user.setting_trends
       store[:crop_images]       = object.current_account.user.setting_crop_images
+      store[:show_quote_button] = object.current_account.user.setting_show_quote_button
     else
       store[:auto_play_gif] = Setting.auto_play_gif
       store[:display_media] = Setting.display_media

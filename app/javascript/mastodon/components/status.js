@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import Avatar from './avatar';
@@ -21,6 +22,29 @@ import PictureInPicturePlaceholder from 'mastodon/components/picture_in_picture_
 // We use the component (and not the container) since we do not want
 // to use the progress bar to show download progress
 import Bundle from '../features/ui/components/bundle';
+
+const mapStateToProps = (state, props) => {
+  let status = props.status;
+
+  if (status === null) {
+    return null;
+  }
+
+  if (status.get('reblog', null) !== null && typeof status.get('reblog') === 'object') {
+    status = status.get('reblog');
+  }
+
+  if (status.get('quote', null) === null) {
+    return {
+      quote_muted: status.get('quote_id', null) ? true : false,
+    };
+  }
+  const id = status.getIn(['quote', 'account', 'id'], null);
+
+  return {
+    quote_muted: id !== null && (state.getIn(['relationships', id, 'muting']) || state.getIn(['relationships', id, 'blocking']) || state.getIn(['relationships', id, 'blocked_by']) || state.getIn(['relationships', id, 'domain_blocking'])) || status.getIn(['quote', 'quote_muted']),
+  };
+};
 
 export const textForScreenReader = (intl, status, rebloggedByText = false) => {
   const displayName = status.getIn(['account', 'display_name']);
@@ -60,6 +84,7 @@ const messages = defineMessages({
 });
 
 export default @injectIntl
+@connect(mapStateToProps)
 class Status extends ImmutablePureComponent {
 
   static contextTypes = {
@@ -69,6 +94,7 @@ class Status extends ImmutablePureComponent {
   static propTypes = {
     status: ImmutablePropTypes.map,
     account: ImmutablePropTypes.map,
+    quote_muted: PropTypes.bool,
     onClick: PropTypes.func,
     onReply: PropTypes.func,
     onFavourite: PropTypes.func,
@@ -103,6 +129,7 @@ class Status extends ImmutablePureComponent {
       inUse: PropTypes.bool,
       available: PropTypes.bool,
     }),
+    contextType: PropTypes.string,
   };
 
   // Avoid checking props that are functions (and whose equality will always
@@ -114,10 +141,12 @@ class Status extends ImmutablePureComponent {
     'hidden',
     'unread',
     'pictureInPicture',
+    'quote_muted',
   ];
 
   state = {
     showMedia: defaultMediaVisibility(this.props.status),
+    showQuoteMedia: defaultMediaVisibility(this.props.status ? this.props.status.get('quote', null) : null),
     statusId: undefined,
     forceFilter: undefined,
   };
@@ -126,6 +155,7 @@ class Status extends ImmutablePureComponent {
     if (nextProps.status && nextProps.status.get('id') !== prevState.statusId) {
       return {
         showMedia: defaultMediaVisibility(nextProps.status),
+        showQuoteMedia: defaultMediaVisibility(nextProps.status.get('quote', null)),
         statusId: nextProps.status.get('id'),
       };
     } else {
@@ -137,7 +167,15 @@ class Status extends ImmutablePureComponent {
     this.setState({ showMedia: !this.state.showMedia });
   };
 
-  handleClick = e => {
+  handleToggleQuoteMediaVisibility = () => {
+    this.setState({ showQuoteMedia: !this.state.showQuoteMedia });
+  }
+
+  handleQuoteClick = e => {
+    this.handleClick(e, true);
+  }
+
+  handleClick = (e, quote = false) => {
     if (e && (e.button !== 0 || e.ctrlKey || e.metaKey)) {
       return;
     }
@@ -146,14 +184,18 @@ class Status extends ImmutablePureComponent {
       e.preventDefault();
     }
 
-    this.handleHotkeyOpen();
+    this.handleHotkeyOpen(quote);
   };
 
   handlePrependAccountClick = e => {
     this.handleAccountClick(e, false);
   };
 
-  handleAccountClick = (e, proper = true) => {
+  handleQuoteAccountClick = e => {
+    this.handleAccountClick(e, true, true);
+  }
+
+  handleAccountClick = (e, proper = true, quote = false) => {
     if (e && (e.button !== 0 || e.ctrlKey || e.metaKey))  {
       return;
     }
@@ -162,7 +204,7 @@ class Status extends ImmutablePureComponent {
       e.preventDefault();
     }
 
-    this._openProfile(proper);
+    this._openProfile(proper, quote);
   };
 
   handleExpandedToggle = () => {
@@ -175,6 +217,10 @@ class Status extends ImmutablePureComponent {
 
   handleTranslate = () => {
     this.props.onTranslate(this._properStatus());
+  };
+
+  handleExpandedQuoteToggle = () => {
+    this.props.onToggleHidden(this._properQuoteStatus());
   };
 
   renderLoadingMediaGallery () {
@@ -194,9 +240,18 @@ class Status extends ImmutablePureComponent {
     this.props.onOpenVideo(status.get('id'), status.getIn(['media_attachments', 0]), options);
   };
 
+  handleOpenVideoQuote = (options) => {
+    const status = this._properQuoteStatus();
+    this.props.onOpenVideo(status.get('id'), status.getIn(['media_attachments', 0]), options);
+  }
+
   handleOpenMedia = (media, index) => {
     this.props.onOpenMedia(this._properStatus().get('id'), media, index);
   };
+
+  handleOpenMediaQuote = (media, index) => {
+    this.props.onOpenMedia(this._properQuoteStatus().get('id'), media, index);
+  }
 
   handleHotkeyOpenMedia = e => {
     const { onOpenMedia, onOpenVideo } = this.props;
@@ -238,14 +293,14 @@ class Status extends ImmutablePureComponent {
     this.props.onMention(this._properStatus().get('account'), this.context.router.history);
   };
 
-  handleHotkeyOpen = () => {
+  handleHotkeyOpen = (quote = false) => {
     if (this.props.onClick) {
       this.props.onClick();
       return;
     }
 
     const { router } = this.context;
-    const status = this._properStatus();
+    const status = quote ? this._properQuoteStatus() : this._properStatus();
 
     if (!router) {
       return;
@@ -258,9 +313,10 @@ class Status extends ImmutablePureComponent {
     this._openProfile();
   };
 
-  _openProfile = (proper = true) => {
+  _openProfile = (proper = true, quote = false) => {
     const { router } = this.context;
-    const status = proper ? this._properStatus() : this.props.status;
+    const properStatus = proper ? this._properStatus() : this.props.status;
+    const status = quote ? properStatus.get('quote') : properStatus;
 
     if (!router) {
       return;
@@ -304,6 +360,16 @@ class Status extends ImmutablePureComponent {
     }
   }
 
+  _properQuoteStatus () {
+    const status = this._properStatus();
+
+    if (status.get('quote', null) !== null && typeof status.get('quote') === 'object') {
+      return status.get('quote');
+    } else {
+      return status;
+    }
+  }
+
   handleRef = c => {
     this.node = c;
   };
@@ -312,7 +378,7 @@ class Status extends ImmutablePureComponent {
     let media = null;
     let statusAvatar, prepend, rebloggedByText;
 
-    const { intl, hidden, featured, unread, showThread, scrollKey, pictureInPicture } = this.props;
+    const { intl, hidden, featured, unread, showThread, scrollKey, pictureInPicture, contextType, quote_muted } = this.props;
 
     let { status, account, ...other } = this.props;
 
@@ -397,10 +463,10 @@ class Status extends ImmutablePureComponent {
       );
     }
 
-    if (pictureInPicture.get('inUse')) {
-      media = <PictureInPicturePlaceholder width={this.props.cachedMediaWidth} />;
-    } else if (status.get('media_attachments').size > 0) {
-      if (this.props.muted) {
+    if (status.get('media_attachments').size > 0) {
+      if (pictureInPicture.get('inUse')) {
+        media = <PictureInPicturePlaceholder width={this.props.cachedMediaWidth} />;
+      } else if (this.props.muted) {
         media = (
           <AttachmentList
             compact
@@ -504,6 +570,135 @@ class Status extends ImmutablePureComponent {
 
     const visibilityIcon = visibilityIconInfo[status.get('visibility')];
 
+    let quote = null;
+    if (status.get('quote', null) !== null && typeof status.get('quote') === 'object') {
+      let quote_status = status.get('quote');
+
+      let quote_media = null;
+      if (quote_status.get('media_attachments').size > 0) {
+        if (pictureInPicture.get('inUse')) {
+          quote_media = <PictureInPicturePlaceholder width={this.props.cachedMediaWidth} />;
+        } else if (this.props.muted) {
+          quote_media = (
+            <AttachmentList
+              compact
+              media={quote_status.get('media_attachments')}
+            />
+          );
+        } else if (quote_status.getIn(['media_attachments', 0, 'type']) === 'audio') {
+          const attachment = quote_status.getIn(['media_attachments', 0]);
+
+          quote_media = (
+            <Bundle fetchComponent={Audio} loading={this.renderLoadingAudioPlayer} >
+              {Component => (
+                <Component
+                  src={attachment.get('url')}
+                  alt={attachment.get('description')}
+                  poster={attachment.get('preview_url') || quote_status.getIn(['account', 'avatar_static'])}
+                  backgroundColor={attachment.getIn(['meta', 'colors', 'background'])}
+                  foregroundColor={attachment.getIn(['meta', 'colors', 'foreground'])}
+                  accentColor={attachment.getIn(['meta', 'colors', 'accent'])}
+                  duration={attachment.getIn(['meta', 'original', 'duration'], 0)}
+                  width={this.props.cachedMediaWidth}
+                  height={70}
+                  cacheWidth={this.props.cacheMediaWidth}
+                  deployPictureInPicture={pictureInPicture.get('available') ? this.handleDeployPictureInPicture : undefined}
+                  quote
+                />
+              )}
+            </Bundle>
+          );
+        } else if (quote_status.getIn(['media_attachments', 0, 'type']) === 'video') {
+          const attachment = quote_status.getIn(['media_attachments', 0]);
+
+          quote_media = (
+            <Bundle fetchComponent={Video} loading={this.renderLoadingVideoPlayer} >
+              {Component => (
+                <Component
+                  preview={attachment.get('preview_url')}
+                  frameRate={attachment.getIn(['meta', 'original', 'frame_rate'])}
+                  blurhash={attachment.get('blurhash')}
+                  src={attachment.get('url')}
+                  alt={attachment.get('description')}
+                  width={this.props.cachedMediaWidth}
+                  height={110}
+                  inline
+                  sensitive={quote_status.get('sensitive')}
+                  onOpenVideo={this.handleOpenVideoQuote}
+                  cacheWidth={this.props.cacheMediaWidth}
+                  deployPictureInPicture={pictureInPicture.get('available') ? this.handleDeployPictureInPicture : undefined}
+                  visible={this.state.showQuoteMedia}
+                  onToggleVisibility={this.handleToggleQuoteMediaVisibility}
+                  quote
+                />
+              )}
+            </Bundle>
+          );
+        } else {
+          quote_media = (
+            <Bundle fetchComponent={MediaGallery} loading={this.renderLoadingMediaGallery}>
+              {Component => (
+                <Component
+                  media={quote_status.get('media_attachments')}
+                  sensitive={quote_status.get('sensitive')}
+                  height={110}
+                  onOpenMedia={this.handleOpenMediaQuote}
+                  cacheWidth={this.props.cacheMediaWidth}
+                  defaultWidth={this.props.cachedMediaWidth}
+                  visible={this.state.showQuoteMedia}
+                  onToggleVisibility={this.handleToggleQuoteMediaVisibility}
+                  quote
+                />
+              )}
+            </Bundle>
+          );
+        }
+      }
+
+      if (quote_muted) {
+        quote = (
+          <div className={classNames('quote-status', `status-${quote_status.get('visibility')}`, { 'status-reply': !!quote_status.get('in_reply_to_id'), muted: this.props.muted })} data-id={quote_status.get('id')}>
+            <div className={classNames('status__content muted-quote', { 'status__content--with-action': this.context.router })}>
+              <FormattedMessage id='status.muted_quote' defaultMessage='Muted quote' />
+            </div>
+          </div>
+        );
+      } else if (quote_status.get('visibility') === 'unlisted' && !!contextType && ['public', 'community', 'hashtag'].includes(contextType.split(':', 2)[0])) {
+        quote = (
+          <div className={classNames('quote-status', `status-${quote_status.get('visibility')}`, { 'status-reply': !!quote_status.get('in_reply_to_id'), muted: this.props.muted })} data-id={quote_status.get('id')}>
+            <div className={classNames('status__content unlisted-quote', { 'status__content--with-action': this.context.router })}>
+              <button onClick={this.handleQuoteClick}>
+                <FormattedMessage id='status.unlisted_quote' defaultMessage='Unlisted quote' />
+              </button>
+            </div>
+          </div>
+        );
+      } else {
+        quote = (
+          <div className={classNames('quote-status', `status-${quote_status.get('visibility')}`, { 'status-reply': !!quote_status.get('in_reply_to_id'), muted: this.props.muted })} data-id={quote_status.get('id')}>
+            <div className='status__info'>
+              <a onClick={this.handleQuoteAccountClick} target='_blank' href={quote_status.getIn(['account', 'url'])} title={quote_status.getIn(['account', 'acct'])} className='status__display-name'>
+                <div className='status__avatar'><Avatar account={quote_status.get('account')} size={18} /></div>
+                <DisplayName account={quote_status.get('account')} />
+              </a>
+            </div>
+
+            <StatusContent status={quote_status} onClick={this.handleQuoteClick} expanded={!quote_status.get('hidden')} onExpandedToggle={this.handleExpandedQuoteToggle} quote />
+
+            {quote_media}
+          </div>
+        );
+      }
+    } else if (quote_muted) {
+      quote = (
+        <div className={classNames('quote-status', { muted: this.props.muted })}>
+          <div className={classNames('status__content muted-quote', { 'status__content--with-action': this.context.router })}>
+            <FormattedMessage id='status.muted_quote' defaultMessage='Muted quote' />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <HotKeys handlers={handlers}>
         <div className={classNames('status__wrapper', `status__wrapper-${status.get('visibility')}`, { 'status__wrapper-reply': !!status.get('in_reply_to_id'), unread, focusable: !this.props.muted })} tabIndex={this.props.muted ? null : 0} data-featured={featured ? 'true' : null} aria-label={textForScreenReader(intl, status, rebloggedByText)} ref={this.handleRef}>
@@ -535,6 +730,7 @@ class Status extends ImmutablePureComponent {
               onCollapsedToggle={this.handleCollapsedToggle}
             />
 
+            {quote}
             {media}
 
             <StatusActionBar scrollKey={scrollKey} status={status} account={account} onFilter={matchedFilters ? this.handleFilterClick : null} {...other} />

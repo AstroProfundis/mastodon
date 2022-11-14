@@ -57,6 +57,7 @@ ja:
         setting_hide_network: フォローとフォロワーの情報がプロフィールページで見られないようにします
         setting_noindex: 公開プロフィールおよび各投稿ページに影響します
         setting_show_application: 投稿するのに使用したアプリが投稿の詳細ビューに表示されるようになります
+        setting_show_quote_button: アクションバーへボタンを表示するかどうかの設定です。引用機能の有効・無効を切り替えるものではありません
         setting_use_blurhash: ぼかしはメディアの色を元に生成されますが、細部は見えにくくなっています
         setting_use_pending_items: 新着があってもタイムラインを自動的にスクロールしないようにします
         username: あなたのユーザー名は%{domain}の中で重複していない必要があります
@@ -211,6 +212,7 @@ ja:
         setting_noindex: 検索エンジンによるインデックスを拒否する
         setting_reduce_motion: アニメーションの動きを減らす
         setting_show_application: 送信したアプリを開示する
+        setting_show_quote_button: 引用ボタンをアクションバーに表示する
         setting_system_font_ui: システムのデフォルトフォントを使う
         setting_theme: サイトテーマ
         setting_trends: 本日のトレンドタグを表示する

@@ -6,6 +6,14 @@ module ActivityPub::CaseTransform
       @camel_lower_cache ||= {}
     end
 
+    NON_CONVERSIONS = %w(
+      _misskey_content
+      _misskey_quote
+      _misskey_reaction
+      _misskey_votes
+      _misskey_talk
+    ).freeze
+
     def camel_lower(value)
       case value
       when Array then value.map { |item| camel_lower(item) }
@@ -13,7 +21,9 @@ module ActivityPub::CaseTransform
       when Symbol then camel_lower(value.to_s).to_sym
       when String
         camel_lower_cache[value] ||= if value.start_with?('_:')
-                                       '_:' + value.gsub(/\A_:/, '').underscore.camelize(:lower)
+                                       "_:#{value.gsub(/\A_:/, '').underscore.camelize(:lower)}"
+                                     elsif NON_CONVERSIONS.include? value
+                                       value
                                      else
                                        value.underscore.camelize(:lower)
                                      end

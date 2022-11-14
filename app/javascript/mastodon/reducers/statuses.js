@@ -27,9 +27,13 @@ const importStatus = (state, status) => state.set(status.id, fromJS(status));
 const importStatuses = (state, statuses) =>
   state.withMutations(mutable => statuses.forEach(status => importStatus(mutable, status)));
 
-const deleteStatus = (state, id, references) => {
+const deleteStatus = (state, id, references, quotes) => {
   references.forEach(ref => {
-    state = deleteStatus(state, ref, []);
+    state = deleteStatus(state, ref, [], []);
+  });
+
+  quotes.forEach(quote => {
+    state = state.setIn([quote, 'quote_id'], null).setIn([quote, 'quote'], null);
   });
 
   return state.delete(id);
@@ -84,7 +88,7 @@ export default function statuses(state = initialState, action) {
   case STATUS_COLLAPSE:
     return state.setIn([action.id, 'collapsed'], action.isCollapsed);
   case TIMELINE_DELETE:
-    return deleteStatus(state, action.id, action.references);
+    return deleteStatus(state, action.id, action.references, action.quotes);
   case STATUS_TRANSLATE_SUCCESS:
     return state.setIn([action.id, 'translation'], fromJS(action.translation));
   case STATUS_TRANSLATE_UNDO:

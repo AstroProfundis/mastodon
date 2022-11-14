@@ -21,6 +21,7 @@ class TextFormatter
   # @option options [Boolean] :with_domains
   # @option options [Boolean] :with_rel_me
   # @option options [Array<Account>] :preloaded_accounts
+  # @option options [String] :quote_uri
   def initialize(text, options = {})
     @text    = text
     @options = DEFAULT_OPTIONS.merge(options)
@@ -44,6 +45,7 @@ class TextFormatter
     end
 
     html = simple_format(html, {}, sanitize: false).delete("\n") if multiline?
+    html = quotify(html, quote_uri) if quote_uri?
 
     html.html_safe # rubocop:disable Rails/OutputSafety
   end
@@ -57,8 +59,8 @@ class TextFormatter
 
       prefix      = url.match(URL_PREFIX_REGEX).to_s
       display_url = url[prefix.length, 30]
-      suffix      = url[prefix.length + 30..-1]
-      cutoff      = url[prefix.length..-1].length > 30
+      suffix      = url[prefix.length + 30..]
+      cutoff      = url[prefix.length..].length > 30
 
       <<~HTML.squish.html_safe # rubocop:disable Rails/OutputSafety
         <a href="#{h(url)}" target="_blank" rel="#{rel.join(' ')}"><span class="invisible">#{h(prefix)}</span><span class="#{cutoff ? 'ellipsis' : ''}">#{h(display_url)}</span><span class="invisible">#{h(suffix)}</span></a>
@@ -69,6 +71,11 @@ class TextFormatter
   end
 
   private
+
+  def quotify(html, quote_uri)
+    link = link_to_url(quote_uri)
+    html.sub(/(<[^>]+>)\z/, "<span class=\"quote-inline\"><br/>QT: #{link}</span>\\1")
+  end
 
   def rewrite
     entities.sort_by! do |entity|
@@ -84,7 +91,7 @@ class TextFormatter
       indices.last
     end
 
-    result << h(text[last_index..-1])
+    result << h(text[last_index..])
 
     result
   end
@@ -159,6 +166,12 @@ class TextFormatter
   def preloaded_accounts
     options[:preloaded_accounts]
   end
+
+  def quote_uri
+    options[:quote_uri]
+  end
+
+  alias quote_uri? quote_uri
 
   def preloaded_accounts?
     preloaded_accounts.present?

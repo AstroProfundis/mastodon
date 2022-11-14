@@ -63,6 +63,7 @@ class StatusContent extends React.PureComponent {
     onClick: PropTypes.func,
     collapsable: PropTypes.bool,
     onCollapsedToggle: PropTypes.func,
+    quote: PropTypes.bool,
     intl: PropTypes.object,
   };
 
@@ -216,11 +217,12 @@ class StatusContent extends React.PureComponent {
   };
 
   render () {
-    const { status, intl } = this.props;
+    const { status, quote, intl } = this.props;
 
     const hidden = this.props.onExpandedToggle ? !this.props.expanded : this.state.hidden;
     const renderReadMore = this.props.onClick && status.get('collapsed');
     const renderTranslate = translationEnabled && this.context.identity.signedIn && this.props.onTranslate && ['public', 'unlisted'].includes(status.get('visibility')) && status.get('contentHtml').length > 0 && status.get('language') !== null && intl.locale !== status.get('language');
+    const renderShowPoll = !!status.get('poll');
 
     const content = { __html: status.get('translation') ? status.getIn(['translation', 'content']) : status.get('contentHtml') };
     const spoilerContent = { __html: status.get('spoilerHtml') };
@@ -241,7 +243,13 @@ class StatusContent extends React.PureComponent {
       <TranslateButton onClick={this.handleTranslate} translation={status.get('translation')} />
     );
 
-    const poll = !!status.get('poll') && (
+    const pollButton = (
+      <button className='status__content__read-more-button' onClick={this.props.onClick} key='show-poll'>
+        <FormattedMessage id='status.show_poll' defaultMessage='Show poll' /><Icon id='angle-right' fixedWidth />
+      </button>
+    );
+
+    const pollContainer = (
       <PollContainer pollId={status.get('poll')} />
     );
 
@@ -272,7 +280,7 @@ class StatusContent extends React.PureComponent {
 
           <div tabIndex={!hidden ? 0 : null} className={`status__content__text ${!hidden ? 'status__content__text--visible' : ''} translate`} lang={lang} dangerouslySetInnerHTML={content} />
 
-          {!hidden && poll}
+          {!hidden && renderShowPoll && quote ? pollButton : pollContainer}
           {!hidden && translateButton}
         </div>
       );
@@ -282,7 +290,7 @@ class StatusContent extends React.PureComponent {
           <div className={classNames} ref={this.setRef} tabIndex='0' onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp} key='status-content' onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
             <div className='status__content__text status__content__text--visible translate' lang={lang} dangerouslySetInnerHTML={content} />
 
-            {poll}
+            {renderShowPoll && quote ? pollButton : pollContainer}
             {translateButton}
           </div>
 
@@ -294,7 +302,7 @@ class StatusContent extends React.PureComponent {
         <div className={classNames} ref={this.setRef} tabIndex='0' onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
           <div className='status__content__text status__content__text--visible translate' lang={lang} dangerouslySetInnerHTML={content} />
 
-          {poll}
+          {renderShowPoll && quote ? pollButton : pollContainer}
           {translateButton}
         </div>
       );

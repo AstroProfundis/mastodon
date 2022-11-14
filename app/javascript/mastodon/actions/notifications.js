@@ -43,7 +43,7 @@ defineMessages({
 });
 
 const fetchRelatedRelationships = (dispatch, notifications) => {
-  const accountIds = notifications.filter(item => ['follow', 'follow_request', 'admin.sign_up'].indexOf(item.type) !== -1).map(item => item.account.id);
+  const accountIds = notifications.map(item => item.account.id);
 
   if (accountIds.length > 0) {
     dispatch(fetchRelationships(accountIds));

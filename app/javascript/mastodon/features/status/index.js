@@ -23,6 +23,7 @@ import {
 } from '../../actions/interactions';
 import {
   replyCompose,
+  quoteCompose,
   mentionCompose,
   directCompose,
 } from '../../actions/compose';
@@ -73,6 +74,8 @@ const messages = defineMessages({
   detailedStatus: { id: 'status.detailed_status', defaultMessage: 'Detailed conversation view' },
   replyConfirm: { id: 'confirmations.reply.confirm', defaultMessage: 'Reply' },
   replyMessage: { id: 'confirmations.reply.message', defaultMessage: 'Replying now will overwrite the message you are currently composing. Are you sure you want to proceed?' },
+  quoteConfirm: { id: 'confirmations.quote.confirm', defaultMessage: 'Quote' },
+  quoteMessage: { id: 'confirmations.quote.message', defaultMessage: 'Quoting now will overwrite the message you are currently composing. Are you sure you want to proceed?' },
   blockDomainConfirm: { id: 'confirmations.domain_block.confirm', defaultMessage: 'Hide entire domain' },
 });
 
@@ -205,6 +208,7 @@ class Status extends ImmutablePureComponent {
   state = {
     fullscreen: false,
     showMedia: defaultMediaVisibility(this.props.status),
+    showQuoteMedia: defaultMediaVisibility(this.props.status ? this.props.status.get('quote', null) : null),
     loadedStatusId: undefined,
   };
 
@@ -227,13 +231,18 @@ class Status extends ImmutablePureComponent {
     }
 
     if (nextProps.status && nextProps.status.get('id') !== this.state.loadedStatusId) {
-      this.setState({ showMedia: defaultMediaVisibility(nextProps.status), loadedStatusId: nextProps.status.get('id') });
+      this.setState({ showMedia: defaultMediaVisibility(nextProps.status), loadedStatusId: nextProps.status.get('id'),
+        showQuoteMedia: defaultMediaVisibility(nextProps.status.get('quote', null)) });
     }
   }
 
   handleToggleMediaVisibility = () => {
     this.setState({ showMedia: !this.state.showMedia });
   };
+
+  handleToggleQuoteMediaVisibility = () => {
+    this.setState({ showQuoteMedia: !this.state.showQuoteMedia });
+  }
 
   handleFavouriteClick = (status) => {
     const { dispatch } = this.props;
@@ -320,6 +329,19 @@ class Status extends ImmutablePureComponent {
     }
   };
 
+  handleQuoteClick = (status) => {
+    let { askReplyConfirmation, dispatch, intl } = this.props;
+    if (askReplyConfirmation) {
+      dispatch(openModal('CONFIRM', {
+        message: intl.formatMessage(messages.quoteMessage),
+        confirm: intl.formatMessage(messages.quoteConfirm),
+        onConfirm: () => dispatch(quoteCompose(status, this.context.router.history)),
+      }));
+    } else {
+      dispatch(quoteCompose(status, this.context.router.history));
+    }
+  }
+
   handleDeleteClick = (status, history, withRedraft = false) => {
     const { dispatch, intl } = this.props;
 
@@ -353,6 +375,14 @@ class Status extends ImmutablePureComponent {
   handleOpenVideo = (media, options) => {
     this.props.dispatch(openModal('VIDEO', { statusId: this.props.status.get('id'), media, options }));
   };
+
+  handleOpenMediaQuote = (media, index) => {
+    this.props.dispatch(openModal('MEDIA', { statusId: this.props.status.getIn(['quote', 'id']), media, index }));
+  }
+
+  handleOpenVideoQuote = (media, options) => {
+    this.props.dispatch(openModal('VIDEO', { statusId: this.props.status.getIn(['quote', 'id']), media, options }));
+  }
 
   handleHotkeyOpenMedia = e => {
     const { status } = this.props;
@@ -638,12 +668,16 @@ class Status extends ImmutablePureComponent {
                   status={status}
                   onOpenVideo={this.handleOpenVideo}
                   onOpenMedia={this.handleOpenMedia}
+                  onOpenVideoQuote={this.handleOpenVideoQuote}
+                  onOpenMediaQuote={this.handleOpenMediaQuote}
                   onToggleHidden={this.handleToggleHidden}
                   onTranslate={this.handleTranslate}
                   domain={domain}
                   showMedia={this.state.showMedia}
                   onToggleMediaVisibility={this.handleToggleMediaVisibility}
                   pictureInPicture={pictureInPicture}
+                  showQuoteMedia={this.state.showQuoteMedia}
+                  onToggleQuoteMediaVisibility={this.handleToggleQuoteMediaVisibility}
                 />
 
                 <ActionBar
@@ -653,6 +687,7 @@ class Status extends ImmutablePureComponent {
                   onFavourite={this.handleFavouriteClick}
                   onReblog={this.handleReblogClick}
                   onBookmark={this.handleBookmarkClick}
+                  onQuote={this.handleQuoteClick}
                   onDelete={this.handleDeleteClick}
                   onEdit={this.handleEditClick}
                   onDirect={this.handleDirectClick}
