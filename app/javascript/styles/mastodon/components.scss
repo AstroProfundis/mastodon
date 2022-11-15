@@ -865,7 +865,7 @@ body > [data-popper-placement] {
   font-weight: 400;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-top: 2px;
+  padding-top: 4px;
   color: $primary-text-color;
 
   &:focus {
@@ -1083,7 +1083,7 @@ body > [data-popper-placement] {
   border: 0;
   background: transparent;
   padding: 0;
-  padding-top: 16px;
+  padding-top: 12px;
   text-decoration: none;
 
   &:hover,
@@ -1222,8 +1222,7 @@ body > [data-popper-placement] {
 }
 
 .status__prepend-icon-wrapper {
-  left: -26px;
-  position: absolute;
+  position: inherit;
 }
 
 .focusable {
@@ -1239,7 +1238,7 @@ body > [data-popper-placement] {
 }
 
 .status {
-  padding: 16px;
+  padding: 16px 16px 12px;
   min-height: 54px;
   border-bottom: 1px solid lighten($ui-base-color, 8%);
   cursor: auto;
@@ -1327,7 +1326,7 @@ body > [data-popper-placement] {
   display: flex;
   font-size: 15px;
   line-height: 22px;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   overflow: hidden;
 
@@ -1348,11 +1347,10 @@ body > [data-popper-placement] {
 
 .status__info {
   font-size: 15px;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
 }
 
 .status-check-box__status {
@@ -1393,10 +1391,13 @@ body > [data-popper-placement] {
 .status__prepend {
   padding: 16px;
   padding-bottom: 0;
+  padding-left: 3em;
+  margin-top: -6px;
+  margin-bottom: -12px;
   display: flex;
-  gap: 10px;
-  font-size: 15px;
-  line-height: 22px;
+  gap: 16px;
+  font-size: 13px;
+  line-height: 18px;
   font-weight: 500;
   color: $dark-text-color;
 
@@ -1416,7 +1417,7 @@ body > [data-popper-placement] {
   justify-content: space-between;
   align-items: center;
   gap: 18px;
-  margin-top: 16px;
+  margin-top: 10px;
 }
 
 .detailed-status__action-bar-dropdown {
@@ -1775,6 +1776,7 @@ a .account__avatar {
 .detailed-status__application,
 .account__display-name {
   text-decoration: none;
+  padding-top: 1px;
 }
 
 .status__display-name,
@@ -1821,7 +1823,7 @@ a.account__display-name {
   gap: 10px;
   font-size: 15px;
   line-height: 22px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   overflow: hidden;
 
   strong,
@@ -1922,13 +1924,16 @@ a.account__display-name {
 .notification__message {
   padding: 16px;
   padding-bottom: 0;
+  padding-left: 3em;
+  margin-top: -6px;
+  margin-bottom: -12px;
   cursor: default;
   color: $darker-text-color;
-  font-size: 15px;
-  line-height: 22px;
+  font-size: 13px;
+  line-height: 18px;
   font-weight: 500;
   display: flex;
-  gap: 10px;
+  gap: 16px;
 
   .fa {
     color: $highlight-text-color;
@@ -1942,6 +1947,8 @@ a.account__display-name {
 }
 
 .notification__favourite-icon-wrapper {
+  position: inherit;
+
   .star-icon {
     color: $gold-star;
   }
@@ -3533,7 +3540,7 @@ button.icon-button.active i.fa-retweet {
   border: 1px solid lighten($ui-base-color, 8%);
   border-radius: 4px;
   color: $dark-text-color;
-  margin-top: 14px;
+  margin-top: 12px;
   text-decoration: none;
   overflow: hidden;
 
@@ -7359,6 +7366,12 @@ noscript {
   &__bio {
     .account__header__content {
       color: $primary-text-color;
+    }
+
+    .account__header__joined {
+      font-size: 14px;
+      padding: 6px 0 0;
+      color: $darker-text-color;
     }
 
     .account__header__fields {
