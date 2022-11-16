@@ -12,7 +12,7 @@ import Suggestions from './suggestions';
 import Search from 'mastodon/features/compose/containers/search_container';
 import SearchResults from './results';
 import { Helmet } from 'react-helmet';
-import { showTrends } from 'mastodon/initial_state';
+import { timelinePreview, showTrends } from 'mastodon/initial_state';
 
 const messages = defineMessages({
   title: { id: 'explore.title', defaultMessage: 'Explore' },
@@ -70,15 +70,21 @@ class Explore extends React.PureComponent {
           ) : (
             <>
               <div className='account__section-headline'>
-                <NavLink exact to='/explore'>
-                  <FormattedMessage tagName='div' id='explore.trending_statuses' defaultMessage='Posts' />
-                </NavLink>
-                <NavLink exact to='/explore/tags'>
-                  <FormattedMessage tagName='div' id='explore.trending_tags' defaultMessage='Hashtags' />
-                </NavLink>
-                <NavLink exact to='/explore/links'>
-                  <FormattedMessage tagName='div' id='explore.trending_links' defaultMessage='News' />
-                </NavLink>
+                {timelinePreview && (
+                  <NavLink exact to='/explore'>
+                    <FormattedMessage tagName='div' id='explore.trending_statuses' defaultMessage='Posts' />
+                  </NavLink>
+                )}
+                {timelinePreview && (
+                  <NavLink exact to='/explore/tags'>
+                    <FormattedMessage tagName='div' id='explore.trending_tags' defaultMessage='Hashtags' />
+                  </NavLink>
+                )}
+                {timelinePreview && (
+                  <NavLink exact to='/explore/links'>
+                    <FormattedMessage tagName='div' id='explore.trending_links' defaultMessage='News' />
+                  </NavLink>
+                )}
                 {signedIn && (
                   <NavLink exact to='/explore/suggestions'>
                     <FormattedMessage tagName='div' id='explore.suggested_follows' defaultMessage='For you' />
@@ -86,12 +92,14 @@ class Explore extends React.PureComponent {
                 )}
               </div>
 
-              <Switch>
-                <Route path='/explore/tags' component={Tags} />
-                <Route path='/explore/links' component={Links} />
-                <Route path='/explore/suggestions' component={Suggestions} />
-                <Route exact path={['/explore', '/explore/posts', '/search']} component={Statuses} componentParams={{ multiColumn }} />
-              </Switch>
+              {timelinePreview && (
+                <Switch>
+                  <Route path='/explore/tags' component={Tags} />
+                  <Route path='/explore/links' component={Links} />
+                  <Route path='/explore/suggestions' component={Suggestions} />
+                  <Route exact path={['/explore', '/explore/posts', '/search']} component={Statuses} componentParams={{ multiColumn }} />
+                </Switch>
+              )}
 
               <Helmet>
                 <title>{intl.formatMessage(messages.title)}</title>
