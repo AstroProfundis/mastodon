@@ -99,7 +99,7 @@ class NavigationPanel extends React.Component {
           <ColumnLink transparent to='/about' icon='ellipsis-h' text={intl.formatMessage(messages.about)} />
         </div>
 
-        <NavigationPortal />
+        {(signedIn || timelinePreview) && <NavigationPortal />}
       </div>
     );
   }
