@@ -7,6 +7,13 @@ GIT
       hkdf (~> 0.2)
       jwt (~> 2.0)
 
+GIT
+  remote: https://github.com/rtomayko/posix-spawn.git
+  revision: 0fce38ed5458b638eda5f3bb711903424a4366db
+  branch: refs/pull/93/head
+  specs:
+    posix-spawn (0.3.15)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -163,7 +170,7 @@ GEM
       xpath (~> 3.2)
     case_transform (0.2)
       activesupport
-    cbor (0.5.9.6)
+    cbor (0.5.9.8)
     charlock_holmes (0.7.7)
     chewy (7.2.4)
       activesupport (>= 5.2)
@@ -473,7 +480,6 @@ GEM
     pghero (3.1.0)
       activerecord (>= 6)
     pkg-config (1.5.1)
-    posix-spawn (0.3.15)
     premailer (1.18.0)
       addressable
       css_parser (>= 1.12.0)
@@ -779,6 +785,7 @@ DEPENDENCIES
   capistrano-rbenv (~> 2.2)
   capistrano-yarn (~> 2.0)
   capybara (~> 3.38)
+  cbor (~> 0.5.9.8)
   charlock_holmes (~> 0.7.7)
   chewy (~> 7.2)
   climate_control (~> 0.2)
@@ -836,7 +843,7 @@ DEPENDENCIES
   pg (~> 1.4)
   pghero
   pkg-config (~> 1.5)
-  posix-spawn
+  posix-spawn!
   premailer-rails
   private_address_check (~> 0.5)
   pry-byebug (~> 3.10)

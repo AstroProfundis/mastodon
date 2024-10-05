@@ -65,7 +65,6 @@ gem 'nsa', '~> 0.2'
 gem 'oj', '~> 3.13'
 gem 'ox', '~> 2.14'
 gem 'parslet'
-gem 'posix-spawn'
 gem 'public_suffix', '~> 5.0'
 gem 'pundit', '~> 2.3'
 gem 'premailer-rails'
@@ -159,3 +158,7 @@ gem 'connection_pool', require: false
 gem 'xorcist', '~> 1.1'
 gem 'cocoon', '~> 1.2'
 gem 'mail', '~> 2.8'
+
+# temp hacks while upstream masto and dependencies update pins
+gem 'cbor', '~> 0.5.9.8'
+gem 'posix-spawn', github: "https://github.com/rtomayko/posix-spawn/pull/93"
