@@ -90,11 +90,16 @@ export const ensureComposeIsVisible = (getState, routerHistory) => {
 };
 
 export function setComposeToStatus(status, text, spoiler_text) {
-  return{
-    type: COMPOSE_SET_STATUS,
-    status,
-    text,
-    spoiler_text,
+  return (dispatch, getState) => {
+    const maxOptions = getState().getIn(['server', 'server', 'configuration', 'polls', 'max_options']);
+
+    dispatch({
+      type: COMPOSE_SET_STATUS,
+      status,
+      text,
+      spoiler_text,
+      maxOptions,
+    });
   };
 }
 
