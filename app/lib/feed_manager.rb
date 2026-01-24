@@ -7,12 +7,12 @@ class FeedManager
   include Redisable
 
   # Maximum number of items stored in a single feed
-  MAX_ITEMS = 800
+  MAX_ITEMS = (ENV['MAX_FEED_ITEMS'] || 800).to_i
 
-  # Number of items in the feed since last reblog of status
-  # before the new reblog will be inserted. Must be <= MAX_ITEMS
-  # or the tracking sets will grow forever
-  REBLOG_FALLOFF = 40
+  # Number of items in a feed since last reblog of status
+  # before new reblog will be inserted. Must be <= MAX_ITEMS
+  # or tracking sets will grow forever
+  REBLOG_FALLOFF = (ENV['MAX_REBLOG_FALLOFF'] || 40).to_i
 
   # Execute block for every active account
   # @yield [Account]
