@@ -1,0 +1,192 @@
+// Custom witches-town theme diff styles
+// Additional customizations specific to witches-town theme
+
+@use 'sass:color';
+@use '../mastodon/functions' as *;
+@use '../mastodon/variables' as *;
+
+// Columns width
+.column {
+  flex-grow: 1;
+}
+
+// Move notification area icons a bit down to avoid clipping
+.notification__favourite-icon-wrapper {
+  top: 10px;
+}
+
+//More readable (and smaller) font in glitch-soc settings window
+.glitch.local-settings span.hint {
+  color: $ui-highlight-color;
+  font-size: 12px;
+}
+
+//More readable inverted buttons
+.icon-button.inverted {
+  color: darken($ui-highlight-color, 3%);
+}
+
+//More clear on when the notification follow (bell icon) is active
+.account__header__tabs__buttons .icon-button.active {
+  color: #fff;
+  background-color: darken($ui-highlight-color, 3%);
+}
+
+.text-icon-button {
+  color: darken($ui-highlight-color, 3%);
+}
+
+.block-modal__action-bar > div,
+.boost-modal__action-bar > div,
+.confirmation-modal__action-bar > div,
+.doodle-modal__action-bar > div,
+.mute-modal__action-bar > div {
+  color: darken($ui-highlight-color, 3%);
+}
+
+.block-modal__cancel-button,
+.confirmation-modal__cancel-button,
+.confirmation-modal__secondary-button,
+.mute-modal__cancel-button {
+  color: darken($ui-highlight-color, 3%);
+}
+
+.character-counter {
+  color: darken($ui-highlight-color, 3%);
+}
+
+.status.light .display-name {
+  color: inherit;
+}
+
+.boost-modal .status__visibility-icon,
+.status.light .status__relative-time {
+  color: darken($ui-highlight-color, 3%);
+}
+
+.status.light .attachment-list__list a {
+  color: darken($ui-highlight-color, 3%);
+}
+
+.status.light .attachment-list.compact .fa {
+  color: darken($ui-highlight-color, 3%);
+}
+
+.status.light .status__content a {
+  color: darken($ui-highlight-color, 3%);
+}
+
+.upload-progress {
+  color: darken($ui-highlight-color, 3%);
+}
+
+.autosuggest-textarea__suggestions__item > .account.small .display-name > span {
+  color: inherit;
+}
+
+//Lang, eng names
+.language-dropdown__dropdown__results__item__common-name {
+  color: $ui-base-lighter-color;
+}
+
+//Reply preview box
+.reply-indicator .attachment-list.compact .fa,
+.reply-indicator .attachment-list__list a,
+.reply-indicator__content a {
+  color: darken($ui-highlight-color, 3%);
+}
+
+//Consistent colors of attachment list links
+.attachment-list.compact .fa,
+.attachment-list__list a {
+  color: $ui-base-lighter-color;
+}
+
+.detailed-status__link .fa-star {
+  font-size: 11px;
+}
+
+.detailed-status__link .fa-retweet {
+  font-size: 12px;
+}
+
+// Hide followers count in webapp
+.account__action-bar__tab:nth-child(3) {
+  white-space: nowrap;
+}
+
+.account__action-bar__tab:nth-child(3) > strong > span {
+  font-size: 0;
+  line-height: 0;
+}
+
+.account__action-bar__tab:nth-child(3) > strong > span::before {
+  padding-right: 5px;
+  padding-left: 5px;
+  content: '666';
+  font-size: 15px;
+  line-height: 18px;
+}
+
+.account__action-bar__tab:nth-child(3) > strong::before,
+.account__action-bar__tab:nth-child(3) > strong::after {
+  content: '\f005';
+  vertical-align: top;
+  font-weight: 400;
+  font-size: 12px;
+  font-family: witchesAwesome, FontAwesome;
+  text-rendering: auto;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Hide followers count on public profile
+.public-layout
+  .public-account-header__tabs__tabs
+  .counter:nth-child(3)
+  .counter-number {
+  font-size: 0;
+  line-height: 0;
+}
+
+.public-layout
+  .public-account-header__tabs__tabs
+  .counter:nth-child(3)
+  .counter-number::before {
+  padding-right: 5px;
+  padding-left: 5px;
+  color: #fff;
+  content: '666';
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.public-layout
+  .public-account-header__tabs__tabs
+  .counter:nth-child(3)
+  a::before,
+.public-layout
+  .public-account-header__tabs__tabs
+  .counter:nth-child(3)
+  .counter-number::after {
+  visibility: visible;
+  vertical-align: top;
+  font-weight: 400;
+  font-size: 12px;
+  font-family: witchesAwesome, FontAwesome;
+  line-height: 20px;
+  text-rendering: auto;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+.public-layout
+  .public-account-header__tabs__tabs
+  .counter:nth-child(3)
+  a::before,
+.public-layout
+  .public-account-header__tabs__tabs
+  .counter:nth-child(3)
+  .counter-number::after {
+  content: '\f005';
+}

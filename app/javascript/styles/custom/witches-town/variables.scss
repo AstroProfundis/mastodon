@@ -1,0 +1,17 @@
+// Custom witches-town theme variables
+// Based on witches-town theme from v4.1 - ported to v4.5 architecture
+
+@use 'sass:color';
+
+@use '../mastodon-light/variables' with (
+  $ui-base-color: #383144,
+  $ui-base-lighter-color: #d5bdd6,
+  $ui-primary-color: #e6e6fa,
+  $ui-secondary-color: #dbd3ff,
+  $ui-highlight-color: #a288bd
+);
+
+@use '../mastodon/functions' with (
+  $darken-multiplier: -1,
+  $lighten-multiplier: 1
+);

@@ -1,0 +1,17 @@
+// Custom new-year theme variables
+// Based on new-year theme from v4.1 - ported to v4.5 architecture
+
+@use 'sass:color';
+
+@use '../mastodon-light/variables' with (
+  $ui-base-color: #52221c,
+  $ui-base-lighter-color: #eba458,
+  $ui-primary-color: #f5d5d3,
+  $ui-secondary-color: #f37343,
+  $ui-highlight-color: #dfc657
+);
+
+@use '../mastodon/functions' with (
+  $darken-multiplier: -1,
+  $lighten-multiplier: 1
+);

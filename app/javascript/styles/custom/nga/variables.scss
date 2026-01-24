@@ -1,0 +1,17 @@
+// Custom nga theme variables
+// Based on nga theme from v4.1 - ported to v4.5 architecture
+
+@use 'sass:color';
+
+@use '../mastodon-light/variables' with (
+  $ui-base-color: #fff7de,
+  $ui-base-lighter-color: #f9f7f2,
+  $ui-secondary-color: #591804,
+  $ui-highlight-color: #591804,
+  $primary-text-color: #330e04
+);
+
+@use '../mastodon/functions' with (
+  $darken-multiplier: -1,
+  $lighten-multiplier: 1
+);

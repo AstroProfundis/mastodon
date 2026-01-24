@@ -1,0 +1,7 @@
+// Custom nga theme CSS variables
+// Based on mastodon-light css_variables with custom color adjustments
+
+@use 'sass:color';
+@use '../mastodon/variables' as *;
+@use 'variables' as *;
+@use '../mastodon/functions' as *;

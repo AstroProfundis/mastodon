@@ -1,0 +1,17 @@
+// Custom dark-green theme variables
+// Based on dark-green theme from v4.1 - ported to v4.5 architecture
+
+@use 'sass:color';
+
+@use '../mastodon-light/variables' with (
+  $ui-base-color: #343434,
+  $ui-base-lighter-color: #8b968f,
+  $ui-primary-color: #a0d2b1,
+  $ui-secondary-color: #e5eee8,
+  $ui-highlight-color: #5ecc86
+);
+
+@use '../mastodon/functions' with (
+  $darken-multiplier: -1,
+  $lighten-multiplier: 1
+);
