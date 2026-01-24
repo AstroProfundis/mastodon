@@ -76,9 +76,10 @@ class Account < ApplicationRecord
   MENTION_RE    = %r{(?<![=/[:word:]])@((#{USERNAME_RE})(?:@[[:word:]]+([.-]+[[:word:]]+)*)?)}
   URL_PREFIX_RE = %r{\Ahttp(s?)://[^/]+}
   USERNAME_ONLY_RE = /\A#{USERNAME_RE}\z/i
-  USERNAME_LENGTH_LIMIT = 30
-  DISPLAY_NAME_LENGTH_LIMIT = 30
-  NOTE_LENGTH_LIMIT = 500
+  USERNAME_LENGTH_LIMIT = (ENV['MAX_USERNAME_CHARS'] || 30).to_i
+  DISPLAY_NAME_LENGTH_LIMIT = (ENV['MAX_DISPLAY_NAME_CHARS'] || 30).to_i
+  NOTE_LENGTH_LIMIT = (ENV['MAX_BIO_CHARS'] || 500).to_i
+  DEFAULT_FIELDS_SIZE = (ENV['MAX_PROFILE_FIELDS'] || 6).to_i
 
   # Hard limits for federated content
   USERNAME_LENGTH_HARD_LIMIT = 2048
