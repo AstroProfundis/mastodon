@@ -3,6 +3,8 @@
 class StatusesIndex < Chewy::Index
   include DatetimeClampingConcern
 
+  USE_IK_ANALYZER = ENV['ENABLE_IK_ANALYZER'] == 'true'
+
   settings index: index_preset(refresh_interval: '30s', number_of_shards: 5), analysis: {
     filter: {
       english_stop: {
@@ -21,6 +23,15 @@ class StatusesIndex < Chewy::Index
       },
     },
 
+    char_filter: {
+      tsconvert: {
+        type: 'stconvert',
+        keep_both: false,
+        delimiter: '#',
+        convert_type: 't2s',
+      },
+    } if USE_IK_ANALYZER,
+
     analyzer: {
       verbatim: {
         tokenizer: 'uax_url_email',
@@ -28,8 +39,13 @@ class StatusesIndex < Chewy::Index
       },
 
       content: {
-        tokenizer: 'standard',
-        filter: %w(
+        tokenizer: USE_IK_ANALYZER ? 'ik_max_word' : 'standard',
+        filter: USE_IK_ANALYZER ? %w(
+          lowercase
+          asciifolding
+          cjk_width
+          english_stop
+        ) : %w(
           lowercase
           asciifolding
           cjk_width
@@ -38,6 +54,7 @@ class StatusesIndex < Chewy::Index
           english_stop
           english_stemmer
         ),
+        char_filter: USE_IK_ANALYZER ? %w(tsconvert) : nil,
       },
 
       hashtag: {

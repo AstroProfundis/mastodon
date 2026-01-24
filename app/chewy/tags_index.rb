@@ -3,16 +3,28 @@
 class TagsIndex < Chewy::Index
   include DatetimeClampingConcern
 
+  USE_IK_ANALYZER = ENV['ENABLE_IK_ANALYZER'] == 'true'
+
   settings index: index_preset(refresh_interval: '30s'), analysis: {
+    char_filter: {
+      tsconvert: {
+        type: 'stconvert',
+        keep_both: false,
+        delimiter: '#',
+        convert_type: 't2s',
+      },
+    } if USE_IK_ANALYZER,
+
     analyzer: {
       content: {
-        tokenizer: 'keyword',
+        tokenizer: USE_IK_ANALYZER ? 'ik_max_word' : 'keyword',
         filter: %w(
           word_delimiter_graph
           lowercase
           asciifolding
           cjk_width
         ),
+        char_filter: USE_IK_ANALYZER ? %w(tsconvert) : nil,
       },
 
       edge_ngram: {

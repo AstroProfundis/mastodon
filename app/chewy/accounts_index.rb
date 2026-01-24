@@ -3,6 +3,8 @@
 class AccountsIndex < Chewy::Index
   include DatetimeClampingConcern
 
+  USE_IK_ANALYZER = ENV['ENABLE_IK_ANALYZER'] == 'true'
+
   settings index: index_preset(refresh_interval: '30s'), analysis: {
     filter: {
       english_stop: {
@@ -26,6 +28,15 @@ class AccountsIndex < Chewy::Index
         token_separator: '',
       },
     },
+
+    char_filter: {
+      tsconvert: {
+        type: 'stconvert',
+        keep_both: false,
+        delimiter: '#',
+        convert_type: 't2s',
+      },
+    } if USE_IK_ANALYZER,
 
     analyzer: {
       # "The FOOING's bar" becomes "foo bar"
@@ -60,7 +71,13 @@ class AccountsIndex < Chewy::Index
         tokenizer: 'edge_ngram',
         filter: %w(lowercase asciifolding cjk_width),
       },
-    },
+
+      ik_max_word: {
+        tokenizer: 'ik_max_word',
+        filter: %w(lowercase asciifolding cjk_width),
+        char_filter: %w(tsconvert),
+      },
+    } if USE_IK_ANALYZER,
 
     tokenizer: {
       edge_ngram: {
@@ -79,8 +96,17 @@ class AccountsIndex < Chewy::Index
     field(:followers_count, type: 'long')
     field(:properties, type: 'keyword', value: ->(account) { account.searchable_properties })
     field(:last_status_at, type: 'date', value: ->(account) { clamp_date(account.last_status_at || account.created_at) })
-    field(:display_name, type: 'text', analyzer: 'verbatim') { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }
-    field(:username, type: 'text', analyzer: 'verbatim', value: ->(account) { [account.username, account.domain].compact.join('@') }) { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }
+    if USE_IK_ANALYZER
+      field(:display_name, type: 'text', analyzer: 'ik_max_word') do
+        field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'ik_max_word'
+      end
+      field(:username, type: 'text', analyzer: 'ik_max_word', value: ->(account) { [account.username, account.domain].compact.join('@') }) do
+        field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'ik_max_word'
+      end
+    else
+      field(:display_name, type: 'text', analyzer: 'verbatim') { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }
+      field(:username, type: 'text', analyzer: 'verbatim', value: ->(account) { [account.username, account.domain].compact.join('@') }) { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }
+    end
     field(:text, type: 'text', analyzer: 'verbatim', value: ->(account) { account.searchable_text }) { field :stemmed, type: 'text', analyzer: 'natural' }
   end
 end
