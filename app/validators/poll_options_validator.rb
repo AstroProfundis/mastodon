@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PollOptionsValidator < ActiveModel::Validator
-  MAX_OPTIONS      = 4
+  MAX_OPTIONS      = (ENV['MAX_POLL_OPTIONS'] || 8).to_i
   MAX_OPTION_CHARS = 50
 
   def validate(poll)
